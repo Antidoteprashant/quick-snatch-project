@@ -25,17 +25,27 @@ const Flashback = () => {
                 });
             }
 
-            // Continuous Marquee Animation
+            // Continuous Marquee Animation - Paused when off-screen
             const width = row1Ref.current.scrollWidth;
-            gsap.to(row1Ref.current, {
+            const marqueeTween = gsap.to(row1Ref.current, {
                 xPercent: -50,
                 ease: "none",
                 duration: 40,
-                repeat: -1
+                repeat: -1,
+                paused: true // Start paused
+            });
+
+            ScrollTrigger.create({
+                trigger: sectionRef.current,
+                start: "top bottom",
+                end: "bottom top",
+                onEnter: () => marqueeTween.play(),
+                onLeave: () => marqueeTween.pause(),
+                onEnterBack: () => marqueeTween.play(),
+                onLeaveBack: () => marqueeTween.pause()
             });
 
             // Reveal items inside the marquee as the section comes into view
-            // (Subtle staggered reveal even though they are scrolling)
             const cards = row1Ref.current.querySelectorAll('.flash-item');
             gsap.from(cards, {
                 scrollTrigger: {

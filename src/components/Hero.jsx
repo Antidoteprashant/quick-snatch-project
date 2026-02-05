@@ -157,7 +157,7 @@ const Hero = () => {
     const comp = useRef(null);
     const canvasRef = useRef(null);
     const titleRef = useRef(null);
-    const paramsRef = useRef({ scrollProgress: 0 });
+    const paramsRef = useRef({ scrollProgress: 0, isVisible: true });
 
     useLayoutEffect(() => {
         const canvas = canvasRef.current;
@@ -242,6 +242,11 @@ const Hero = () => {
 
         // Render Loop
         const render = () => {
+            if (!paramsRef.current.isVisible) {
+                animationFrameId = requestAnimationFrame(render);
+                return;
+            }
+
             const currentTime = performance.now();
             gl.uniform1f(uniforms.u_time, currentTime);
             gl.uniform1f(uniforms.u_scroll_progr, paramsRef.current.scrollProgress);
@@ -252,6 +257,19 @@ const Hero = () => {
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
             animationFrameId = requestAnimationFrame(render);
         };
+
+        // Intersection Observer to pause rendering when off-screen
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                paramsRef.current.isVisible = entry.isIntersecting;
+            },
+            { threshold: 0 }
+        );
+
+        if (comp.current) {
+            observer.observe(comp.current);
+        }
+
         render();
 
         // GSAP Scroll Interaction
@@ -268,9 +286,9 @@ const Hero = () => {
             });
 
             // Text Animations - smoother
-            gsap.fromTo(titleRef.current, 
-                { 
-                    opacity: 0, 
+            gsap.fromTo(titleRef.current,
+                {
+                    opacity: 0,
                     y: 80,
                     scale: 0.9
                 },
@@ -287,6 +305,7 @@ const Hero = () => {
         return () => {
             window.removeEventListener('resize', resize);
             cancelAnimationFrame(animationFrameId);
+            observer.disconnect();
             ctx.revert();
         };
     }, []);
@@ -317,10 +336,10 @@ const Hero = () => {
             />
 
             {/* Content */}
-            <div className="hero-content" style={{ 
-                zIndex: 10, 
-                textAlign: 'center', 
-                mixBlendMode: 'difference' 
+            <div className="hero-content" style={{
+                zIndex: 10,
+                textAlign: 'center',
+                mixBlendMode: 'difference'
             }}>
                 <h1
                     ref={titleRef}

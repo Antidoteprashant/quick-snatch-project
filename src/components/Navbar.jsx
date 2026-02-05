@@ -81,6 +81,21 @@ const Navbar = () => {
         ARCHIVE
       </button>
 
+      {/* ABOUT */}
+      <button
+        onClick={() => {
+          if (location.pathname === "/about") return;
+          window.location.href = "/about";
+        }}
+        style={{
+          ...btnStyle,
+          color: location.pathname === "/about" ? "#fff" : "rgba(255,255,255,0.75)",
+          textShadow: location.pathname === "/about" ? "0 0 10px rgba(255,255,255,0.5)" : "none",
+        }}
+      >
+        ABOUT
+      </button>
+
       {/* JOIN */}
       <button
         onClick={() =>

@@ -8,6 +8,7 @@ import Hero from "./components/Hero";
 import EventDetails from "./components/EventDetails";
 import Flashback from "./components/Flashback";
 import Registration from "./components/Registration";
+import About from "./components/About";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -25,6 +26,12 @@ const HomePage = () => (
       <Flashback />
     </section>
   </>
+);
+
+const AboutPage = () => (
+  <section id="about-page" style={{ minHeight: "100vh", paddingTop: "80px" }}>
+    <About />
+  </section>
 );
 
 const JoinPage = () => (
@@ -47,6 +54,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route path="/join" element={<JoinPage />} />
       </Routes>
     </div>
